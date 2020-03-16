@@ -1,0 +1,25 @@
+// header file
+#include "ThreadClass.h"
+
+//Global Array used for the multiple threads
+extern int B[1000][1000];
+
+//---------------------------------------------------------------//
+//  Process Thread Class:
+//     each thread is given a location that it fills with the
+//     proper data, using the given algorithm
+//---------------------------------------------------------------//
+
+class Thread3 : public Thread
+{
+ public:
+  // constructor
+  Thread3( int i, int j );
+
+ private:
+  void ThreadFunc();  // thread body
+  int iIndex;
+  int jIndex;
+};
+
+#endif

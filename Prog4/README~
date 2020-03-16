@@ -1,0 +1,39 @@
+/* ----------------------------------------------------------- */
+/* NAME : Jake McNeilly                      User ID: jrmcneil */
+/* DUE DATE : 11/5/2019                                        */
+/* PROGRAM ASSIGNMENT #4                                       */
+/* FILE NAME : README                                          */
+/* PROGRAM PURPOSE :                                           */
+/*    The purpose of this README is to proide a space for me   */
+/*    to answers the questions supplied with program 4.        */
+/* ----------------------------------------------------------- */
+
+1.How do you guarantee that only three elves will ask questions?
+
+
+2.Show that why no elf will leave before the questions are answered.
+
+
+3.Show that while three elves are waiting for an answer, no other 
+elves can cut in and ask questions.
+
+
+4.How do you guarantee that Santa only answers question while he is 
+not sleeping.
+
+
+5.Show that when Santa is wakened up by a reindeer, this reindeer is
+ the last one coming back from vacation.
+
+
+6.How do you make sure Santa always handles reindeers first.
+
+
+7.Show that while Santa is attaching the sleigh and delivering toys, 
+all reindeers are there. They won't sneak out for vacation.
+
+
+8.Show that while Santa is attaching the sleigh and delivering toys,
+elves will not ask questions.
+
+

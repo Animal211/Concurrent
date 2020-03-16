@@ -1,0 +1,198 @@
+#include <iostream>
+#include "thread.h"
+#include "boat-monitor.h"
+
+using namespace std;// sets namespace
+extern Mutex* PRINT_LOCK;   // gloabl mutex lock
+
+static Boat_Monitor *Boat;
+
+/*----------------------------------------------------------------------*/
+/* Cannibal_Thread::Cannibal_Thread()                                   */
+/*      Constructor                                                     */
+/*                  C_id : id of the running thread                     */
+/*----------------------------------------------------------------------*/
+Cannibal_Thread::Cannibal_Thread(int C_ID): C_ID(C_ID){
+  ThreadName.seekp(0, ios::beg);
+  ThreadName << "Cannibal " << C_ID << '\0';
+
+  /* Sets the space needed in front of each print statement */
+  int i;
+  for(i=1;i < C_ID;i++){
+    C_startSpace[i-1] = ' ';
+  } C_startSpace[i-1] = '\0';
+}
+
+
+/*----------------------------------------------------------------------*/
+/* FUNCTION  Cannibal_Thread :                                          */
+/*     This serves to run each cannibal trying to get on the boat to    */
+/*     cross until there is no longer a boat                            */
+/* PARAMETER USAGE :                                                    */
+/*      NONE                                                            */
+/* FUNCTION CALLED :                                                    */
+/*     Lock(),Unlock();Delay(),Rand(),CannibalArrives(),Exit()          */
+/*----------------------------------------------------------------------*/
+void Cannibal_Thread::ThreadFunc(){
+  Thread::ThreadFunc();   // required
+  /* Prints cannibal # created */
+  PRINT_LOCK->Lock();
+  cout << C_startSpace << "Cannibal " << C_ID <<" starts" << endl;
+  PRINT_LOCK->Unlock();
+
+  srand(time(0));
+  int z,random;
+
+  while(1){
+    //travel time random time
+    random = rand()%10000;
+    for(z=0;z!=random;z++)
+      Delay();
+
+    /*Prints cannibal has arrived msg*/
+    PRINT_LOCK->Lock();
+    cout << C_startSpace << "Cannibal  "<< C_ID << " arrives" << endl;
+    PRINT_LOCK->Unlock();
+
+    if(Boat->CannibalArrives(C_ID, C_startSpace) == -1 )      // register to cross the river
+      Exit();
+
+    //travel time random time
+    random = rand()%10000;
+    for(z=0;z!=random;z++)
+      Delay();
+  }
+
+  Exit();                 // thread exits
+}
+
+
+/*----------------------------------------------------------------------*/
+/* Missionary_Thread::Missionary_Thread()                               */
+/*      Constructor                                                     */
+/*                  M_id : id of the running thread                     */
+/*----------------------------------------------------------------------*/
+Missionary_Thread::Missionary_Thread(int M_ID): M_ID(M_ID){
+  ThreadName.seekp(0, ios::beg);
+  ThreadName << "Missionary " << M_ID << '\0';
+
+  /* Sets the space needed in front of each print statement */
+  int i;
+  for(i=1;i < M_ID;i++){
+    M_startSpace[i-1] = ' ';
+  } M_startSpace[i-1] = '\0';
+}
+
+/*----------------------------------------------------------------------*/
+/* FUNCTION  Missionary_Thread :                                        */
+/*     This serves to run each missionary trying to use the boat to     */
+/*     Cross until the boat is no longer available                      */
+/* PARAMETER USAGE :                                                    */
+/*      NONE                                                            */
+/* FUNCTION CALLED :                                                    */
+/*     Lock(),Unlock();Delay(),Rand(),MissionaryArrives(),Exit()        */
+/*----------------------------------------------------------------------*/
+void Missionary_Thread::ThreadFunc(){
+  Thread::ThreadFunc();   // required
+  /* Prints cannibal # created */
+  PRINT_LOCK->Lock();
+  cout << M_startSpace << "Missionary " << M_ID <<" starts" << endl;
+  PRINT_LOCK->Unlock();
+
+  srand(time(0));
+  int z,random;
+
+  while(1){
+    //travel time random time
+    random = rand()%10000;
+    for(z=0;z!=random;z++)
+      Delay();
+
+    /*Prints missionary has arrived msg*/
+    PRINT_LOCK->Lock();
+    cout << M_startSpace << "Missionary "<< M_ID << " arrives" << endl;
+    PRINT_LOCK->Unlock();
+
+    if(Boat->MissionaryArrives(M_ID,M_startSpace)== -1)     // register to cross the river
+      Exit();
+    //travel time random time
+    random = rand()%10000;
+    for(z=0;z!=random;z++)
+      Delay();
+  }
+}
+
+
+
+
+/*----------------------------------------------------------------------*/
+/* Boat::boat()                                                         */
+/*      Constructor                                                     */
+/*                  numberOfTrips : the nymber of trips to take         */
+/*                  NumberOfThreads : the number of people running      */
+/*----------------------------------------------------------------------*/
+Boat_Thread::Boat_Thread(int numberOfTrips,int NumberOfThreads){
+  ThreadName.seekp(0, ios::beg);
+  ThreadName << "Boat" << '\0';
+
+  NumberOfTripsToTake = numberOfTrips;
+  Boat = new Boat_Monitor("Boat",numberOfTrips,NumberOfThreads);
+
+  trip = 1;
+}
+
+
+/*----------------------------------------------------------------------*/
+/* FUNCTION  Boat_Thread :                                              */
+/*     This serves to run the boat thread running the boat when it is   */
+/*     Ready.                                                           */
+/* PARAMETER USAGE :                                                    */
+/*      NONE                                                            */
+/* FUNCTION CALLED :                                                    */
+/*     Lock(),Unlock();Delay(),Rand(),BoatReady(),Exit(),BoatDone()     */
+/*----------------------------------------------------------------------*/
+void Boat_Thread::ThreadFunc(){
+  Thread::ThreadFunc();   // required
+  srand(time(0));
+  int z,random,firstcheck =1,lastTrip=0;
+
+  /* Prints boat created created */
+  PRINT_LOCK->Lock();
+  cout << "***** BOAT thread starts" << endl;
+    PRINT_LOCK->Unlock();
+
+    while(1){
+        //travel time random time
+        random = rand()%10000;
+    for(z=0;z!=random;z++)
+    Delay();
+
+        if(firstcheck && !lastTrip){
+            PRINT_LOCK->Lock();
+            cout << "*****  The boat is ready" << endl;
+            PRINT_LOCK->Unlock();
+            firstcheck = 0;
+        }
+        int havePassangers = Boat->BoatReady(IDs,SetType);
+        if(havePassangers == 1){
+            PRINT_LOCK->Lock();
+            cout << "***** Boat load ("<< trip << "): Passanger list (" << SetType[0]<<IDs[0] << ", " << SetType[1]<< IDs[1] << ", " << SetType[2]<<IDs[2] <<")" <<endl;
+            PRINT_LOCK->Unlock();
+
+            //travel time random time
+            random = rand()%10000;
+        for(z=0;z!=random;z++)
+        Delay();
+
+            PRINT_LOCK->Lock();
+            cout << "***** Boat load("<< trip << "): Completed" <<endl;
+            PRINT_LOCK->Unlock();
+
+            lastTrip = Boat->BoatDone();  // lets all on the boat off
+            firstcheck=1;
+            trip++;
+        }else if(havePassangers == -1){
+            Exit();
+        }
+    }
+}

@@ -1,0 +1,72 @@
+/* ----------------------------------------------------------- */
+/* NAME : Jake McNeilly                      User ID: jrmcneil */
+/* DUE DATE : 11/5/2019                                        */
+/* PROGRAM ASSIGNMENT #4                                       */
+/* FILE NAME : README                                          */
+/* PROGRAM PURPOSE :                                           */
+/*    The purpose of this README is to proide a space for me   */
+/*    to answers the questions supplied with program 4.        */
+/* ----------------------------------------------------------- */
+
+1.How do you guarantee that only three elves will ask questions?
+
+     For each elf to ask a question it first waits on the semaphore 
+"queue" which starts with 3. After the first three elves go in the
+only time it signals is after santa answers the question and the 
+elves go back to work when santa signals the queue 3 times for the
+next group.
+ 
+
+2.Show that why no elf will leave before the questions are answered.
+Each elf while in the queue for issues calls wait on the semaphore
+"Answer" which is signaled by santa after answering their questions.
+This ensures the threads are held until the question is answered.
+
+
+3.Show that while three elves are waiting for an answer, no other 
+elves can cut in and ask questions.
+Once the first three elves enter the queue each following elf still 
+calls Wait on Queue. The queue inside the semaphore will keep the 
+order of the subsequent wait calls and allow in only the next sub-
+sequent waiting elves once santa signals 3 times.
+
+
+4.How do you guarantee that Santa only answers question while he is 
+not sleeping.
+There is a sleeping semaphore that is waited on which is only Signaled
+after the 3rd elf or the last reindeer returns. This gurenteers Santa
+doesnt answer questions while sleeping.
+
+
+5.Show that when Santa is wakened up by a reindeer, this reindeer is
+ the last one coming back from vacation.
+The method waitothers keeps a running tally of the reindeer back from
+vacation which it compares to the total number of reindeer each call.
+If they are qual then it must be the last reindeer and that reindeer 
+sends a signal to santa.
+
+
+6.How do you make sure Santa always handles reindeers first.
+In the sleep method there is an if else statment that decides if it
+was elves or reindeer that woke santa up. The if statment calls the 
+sleep method which checks first if the reindeer count is equal to the
+total number of reindeer, if it is it returns 1 and that is handled.
+If there arent all the reindeer it then checks the queue to help the 
+elves.
+
+
+7.Show that while Santa is attaching the sleigh and delivering toys, 
+all reindeers are there. They won't sneak out for vacation.
+After waiting for all the reindeer each reindeer waits on the sleigh.
+Once the sleigh is there each reindeer signals when they are attached
+and then call flyoff which makes each reindeer wait on the "delivering"
+semaphore to make sure they do not leave during delivery nad only when
+santa releases them.
+
+8.Show that while Santa is attaching the sleigh and delivering toys,
+elves will not ask questions.
+While out delivering presents elves can still have issues but they
+will only be put in the queue semaphores queue. They then wait there
+until santa gets back from delivering. When santa gets back if he
+hasn't retired then he answers their questions.
+

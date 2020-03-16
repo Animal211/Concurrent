@@ -1,0 +1,49 @@
+#ifndef _THREAD_H
+#define _THREAD_H
+
+#include "ThreadClass.h"
+
+/*----------------------------------------------------------------------*/
+/*       Cannibal Thread Constructor Class Definition                   */
+/*----------------------------------------------------------------------*/
+class Cannibal_Thread : public Thread {
+ public:                             // public variable and methods
+  Cannibal_Thread(int C_ID);      // constructor
+  
+ private:                            // private variables
+  void ThreadFunc();              // thread body
+  int C_ID;                        
+  char C_startSpace[16];             
+};
+
+
+/*----------------------------------------------------------------------*/
+/*       Missionary Thread Constructor Class Definition                 */
+/*----------------------------------------------------------------------*/
+class Missionary_Thread : public Thread {
+ public:                                 // public variable and methods
+  Missionary_Thread(int M_ID);        // constructor
+  
+ private:                                // private variables
+  void ThreadFunc();                  // thread body
+  int M_ID;
+  char M_startSpace[16];             
+};
+
+
+/*----------------------------------------------------------------------*/
+/*       Boat Thread Constructor Class Definition                       */
+/*----------------------------------------------------------------------*/
+class Boat_Thread : public Thread {
+ public:                                                         // public variable and methods
+  Boat_Thread(int numberOfTrips, int NumberOfThreads);        // constructor
+  
+ private:                                                        // private variables
+  void ThreadFunc();                                          // thread body
+  int NumberOfTripsToTake; 
+  int trip;
+  int IDs[3];
+  char SetType[3];   
+};
+
+#endif

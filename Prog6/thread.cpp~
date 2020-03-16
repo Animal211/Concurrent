@@ -1,0 +1,143 @@
+#include <iostream>
+#include "thread.h"
+
+using namespace std;
+
+extern Mutex* Printer;
+extern int **Matrix;
+
+
+Processor_Grid::Processor_Grid(int i, int j, int threadID, SynOneToOneChannel* left, SynOneToOneChannel* right, SynOneToOneChannel* up, SynOneToOneChannel* down) {
+	UserDefinedThreadID = threadID;
+	rowIndex = i;
+	columnIndex = j;
+	localSum = 0;
+
+	Up = up;
+	Down = down;
+	Left = left;
+	Right = right;
+
+	Printer->Lock();
+	cout << "      Thread P[" << i << "," << j << "] started " << endl;
+	Printer->Unlock();
+}
+
+
+void Processor_Grid::ThreadFunc() {
+	Thread::ThreadFunc();
+
+	int aboveNum = 0;
+	int leftNum = 0;
+	int EOD = -1;
+
+	while (1) {
+		Left->Receive(&leftNum, sizeof(int));
+		Up->Receive(&aboveNum, sizeof(int));
+
+		if (aboveNum == -1 && leftNum == -1) {
+			Matrix[rowIndex - 1][columnIndex - 1] = localSum;
+		}
+		else {
+			Printer->Lock();
+			cout << "      Thread P[" << rowIndex << "," << columnIndex << "] received " << aboveNum << " from above and " << leftNum << " from left" << endl;
+			Printer->Unlock();
+
+			localSum += aboveNum*leftNum;
+		}
+
+		if (Down && Right) {
+			Down->Send(&aboveNum, sizeof(int));
+			Right->Send(&leftNum, sizeof(int));
+			Printer->Lock();
+			cout << "      Thread P[" << rowIndex << "," << columnIndex << "] sent " << aboveNum << " to below and " << leftNum << " to right" << endl;
+			Printer->Unlock();
+		}
+		else if (Down) {
+			Down->Send(&aboveNum, sizeof(int));
+			Printer->Lock();
+			cout << "      Thread P[" << rowIndex << "," << columnIndex << "] sent " << aboveNum << " to below " << endl;
+			Printer->Unlock();
+		}
+		else if (Right) {
+			Right->Send(&leftNum, sizeof(int));
+			Printer->Lock();
+			cout << "      Thread P[" << rowIndex << "," << columnIndex << "] sent " << leftNum << " to right " << endl;
+			Printer->Unlock();
+		}
+
+		if (aboveNum == -1 && leftNum == -1) {
+			Printer->Lock();
+			cout << "      Thread P[" << rowIndex << "," << columnIndex << "] received EOD, saved result " << localSum << " and termainated" << endl;
+			Printer->Unlock();
+
+			Exit();
+		}
+	}
+}
+
+Processor_Row::Processor_Row(int i, int threadID, SynOneToOneChannel* right, int *array, int arraySize) {
+	UserDefinedThreadID = threadID;
+	rowIndex = i;
+	Right = right;
+	ArrayPTR = array;
+	array_size = arraySize;
+
+	Printer->Lock();
+	cout << "Row thread r[" << i << "] started" << endl;
+	Printer->Unlock();
+}
+
+void Processor_Row::ThreadFunc() {
+	Thread::ThreadFunc();
+	int i, EOD = -1;
+
+	for (i = 0; i < array_size; i++) {
+		Right->Send(&ArrayPTR[i], sizeof(int));
+
+		Printer->Lock();
+		cout << "Row thread r[" << rowIndex << "] sent " << ArrayPTR[i] << " to [" << rowIndex << ",1]" << endl;
+		Printer->Unlock();
+	}
+
+	Right->Send(&EOD, sizeof(int));
+
+	Printer->Lock();
+	cout << "Row thread r[" << rowIndex << "] sent EOD to [" << rowIndex << ",1] and terminated" << endl;
+	Printer->Unlock();
+
+	Exit();
+}
+
+Processor_Column::Processor_Column(int j, int threadID, SynOneToOneChannel* down, int* array, int arraySize) {
+	UserDefinedThreadID = threadID;
+	columnIndex = j;
+	Down = down;
+	ArrayPTR = array;
+	array_size = arraySize;
+
+	Printer->Lock();
+	cout << "   Column thread c[" << j << "] started" << endl;
+	Printer->Unlock();
+}
+
+
+void Processor_Column::ThreadFunc() {
+	Thread::ThreadFunc();
+	int i, EOD = -1;
+
+	for (i = 0; i < array_size; i++) {
+		Down->Send(&ArrayPTR[i], sizeof(int));
+		Printer->Lock();
+		cout << "   Column thread c[" << columnIndex << "] sent " << ArrayPTR[i] << " to [1," << columnIndex << "]" << endl;
+		Printer->Unlock();
+	}
+
+	Down->Send(&EOD, sizeof(int));
+	Printer->Lock();
+	cout << "   Column thread c[" << columnIndex << "] sent EOD to [1," << columnIndex << "] and terminated" << endl;
+	Printer->Unlock();
+
+
+	Exit();
+}

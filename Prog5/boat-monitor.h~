@@ -1,0 +1,41 @@
+// -----------------------------------------------------------
+// NAME : Jake McNeilly                     User ID: jrmcneil
+// DUE DATE : 12/06/2019
+// PROGRAM ASSIGNMENT #5
+// FILE NAME : thread.cpp
+// PROGRAM PURPOSE :
+//
+// -----------------------------------------------------------
+
+#include "ThreadClass.h"
+#include<iostream>
+
+//Boat monitor constructor
+class Boat_Monitor : public Monitor{
+
+ public:
+  Boat_Monitor(char* Name, int boatrounds,int passengers);
+  int BoatReady(int *names,char *types);
+  int BoatDone();
+  int MissionaryArrives(int mname);
+  int CannibalArrives(int cname);
+
+ private:
+  Condition RIDING;
+  Condition INPROGRESSG;
+  Condition WaitingCannibals;
+  Condition WaitingMissionaries;
+
+  int TripsToTake; //number of rounds to take
+  int tripsTaken; //number of rounds arcross the lake
+  int cannibalswaiting; //number of cannibals waiting
+  int missionarieswaiting; //number of missionaries waiting
+
+  int passengerindex; //used for incrementing through passenger lists
+  int passengernames[3]; //ids of passenger threads
+  char passengertype[3]; //saves which passengers are cannables or missionaries
+
+  bool BoatClosed;
+  int finishedthreads; //number of closed threads
+  int totalthreads; //total number of cannable and missionary threads
+};

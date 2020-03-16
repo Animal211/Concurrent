@@ -1,0 +1,48 @@
+// ----------------------------------------------------------- 
+// NAME : Jake McNeilly                      User ID: jrmcneil 
+// DUE DATE : 12/13/2019                                       
+// PROGRAM ASSIGNMENT #6                                        
+// FILE NAME : README            
+// PROGRAM PURPOSE :                                           
+//  The purpose of this program is to do matrix multiplication
+// on two matrices input through a input file. 
+// -----------------------------------------------------------
+
+Answer 1:
+ My programs logic is that an input file containing the dim-
+ensions and data of two matrices is read in. After reading and
+saving the matrices the program creates the channels needed for
+talking to the threads down and to the right. Each thread reciev-
+es the numbers from above and left, does its multiplication and
+saves the answers until reading end of data.
+
+Answer 2:
+ This program works by reading in the dimensions and data from
+an input file using stdin. From there the data is used to create
+threads with channels that allow communication with the threads 
+below and to the right. Each thread used the channels to recieve 
+numbers above and left so they can be multiplied and sent to its
+neibors (continuing right and down) in return. Threads complete
+and can exit once they recieve the end of data flag from its up
+and left neighbors. 
+
+Answer 3:
+
+
+Answer 4:
+ a:
+
+ b: Synchronous is used instead of Asynchronous because if we used
+ asynchronnmous there would be no way to protect threads from being
+overwritten by other threads. By using syncronous we can wait to send
+our data to ensure data being read isn't overwrote prematurely.
+
+ c:
+ooooo xoooo xxooo xxxoo xxxxo xxxxx xxxxx xxxxx xxxxx
+ooooo ooooo xoooo xxooo xxxoo xxxxo xxxxx xxxxx xxxxx
+ooooo ooooo ooooo xoooo xxooo xxxoo xxxxo xxxxx xxxxx
+ooooo ooooo ooooo ooooo xoooo xxooo xxxoo xxxxo xxxxx
+Read from left to right, o means running, x means it has gotten EOD
+and terminated. The termination pattern seems to 
+
+ d:

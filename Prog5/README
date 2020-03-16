@@ -1,0 +1,71 @@
+// -----------------------------------------------------------
+// NAME : Jake McNeilly                     User ID: jrmcneil
+// DUE DATE : 12/06/2019
+// PROGRAM ASSIGNMENT #5
+// FILE NAME : README
+// PROGRAM PURPOSE :
+//    The purpose of this program to to have a boat thread
+//which can take 3 passengers repeadily until its met its trip
+//quota. The number of cannibles and missionaries riding the boat
+//along with the number of required rounds aross the lake are
+// supplied as arguments
+// -----------------------------------------------------------
+
+Question 1:
+The logic of my program is pretty simple. There is a boat thread
+that wants to complete a input set amount of runs accross a lake
+by loading 3 passengers at a time. There are missionary threads
+and cannibal thread that wait for the boat. When the boat is ready
+checks all avalible people to see if a safe combination of passengers
+are ready to board. Once it finds one it loads them onboard and
+does a round accross the lake. After its set number of rounds the 
+lake cross closes and allthreads quit.
+
+Question 2:
+My program works primarily due to the use of my monitor. The monitor
+allows only one thread inside at a time and while active each thread
+has a job. The cannibal and missionaries just wait for the boat and
+then wait for the boat to signal they can unload. The boat thread works
+because it is always checking to see if there is a satifactory 
+passenger combination when not traveling. Once there is a safe trip the
+boat records thir names and types, locks them onboard and only lets them
+leave on its signal. Each round across the lake the counter for rounds
+is checked and if it is done with is rounds it waits for al the threads 
+to stop and closes down.
+
+Question 3:
+My monitor has the following variables:
+	int totalrounds; //number of trips boat has to take:
+	int roundcounter; //how many rounds completed so far
+	int cannibalswaiting; //number of cannibals waiting
+    int missionarieswaiting; //number of missionaries waiting
+    int passengerindex; //used for incrementing through passenger lists
+    int passengernames[3]; //ids of passenger threads
+    char passengertype[3]; //saves which passengers are cannables or missionaries
+    bool boatretired; //0 if still running, 1 if retired
+    int finishedthreads; //number of closed threads
+    int totalthreads; //total number of cannable and missionary threads at start
+
+Total rounds defaults to 5 unless input differently at start and is used to
+see if completed all needed rounds. Roundcounter starts at 0 and increments
+after each sucessful round. Cannibalswaiting and missionarieswaiting start at
+zero because none start in the line but it gets incremented up everytime one
+arrives. passenger index starts at 0 and is used to save boarding names and
+types in the passengernames and passengertype arrays. boatretired is used to
+track if all rounds have been completed, setto 1 when total rounds = roundcount.
+Finnished threads keeps track of completed and closed threads so we can compare it
+to total threads which is set to the sum of all cannibals and missionaries.
+
+Question 4:
+I verify that each boat has 3 people in BoatReady. BoatReady keep checking the
+values og cannibalswaiting and missionarieswaiting. If there is a safe combination
+then the names are recorded, and they go on the boat. Each passenger during the ride
+cannot do anything until they get a signal from the boat to get off. This ensures 
+that the people onboard do not get off mid voyage.
+
+Question 5:
+ My policy for assembling a boat load is once the boat is ready using BoatReady()
+ the boat keeps checking the totals of the missionaries and cannibals. The boat uses 
+ these values to see if a safe combination exists to cross the lake. If it does the 
+ boat signals the cannibals and missionaries seperatly to board. Once boarded the 
+ passengers wait for a signal the the boat is no longer moving so they can unload.

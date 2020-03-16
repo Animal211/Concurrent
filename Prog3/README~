@@ -1,0 +1,28 @@
+/* ----------------------------------------------------------- */
+/* NAME : Jake McNeilly                      User ID: jrmcneil */
+/* DUE DATE : 11/1/2019                                        */
+/* PROGRAM ASSIGNMENT #3                                       */
+/* FILE NAME : README                                          */
+/* PROGRAM PURPOSE :                                           */
+/*    The purpose of this README is to proide a space for me   */
+/*    to answers the questions supplied with program 3.        */
+/* ----------------------------------------------------------- */
+
+1.Are there any race conditions in this prefix sum computation? 
+Why?
+
+
+2.Prove rigorously that this algorithm does compute the prefix 
+sum correctly.
+
+
+3.Can the result of x[i]+x[i-2h-1] of run h be saved back to x[i]?
+Explain your findings as clearly as possible.
+
+
+4.The main() creates n threads in each iteration and wait for them to complete.
+There is a significant amount of time in creating and joining threads.
+If you are allowed to use extra variables/arrays and busy waiting,
+can you just create n threads and let them do all the work without the use of a
+temporary array B[*,*]? Suggest a solution and discuss its correctness.
+

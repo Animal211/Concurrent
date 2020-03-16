@@ -1,0 +1,38 @@
+/* ----------------------------------------------------------- */
+/* NAME : Jake McNeilly                      User ID: jrmcneil */
+/* DUE DATE : 11/1/2019                                        */
+/* PROGRAM ASSIGNMENT #3                                       */
+/* FILE NAME : README                                          */
+/* PROGRAM PURPOSE :                                           */
+/*    The purpose of this README is to proide a space for me   */
+/*    to answers the questions supplied with program 3.        */
+/* ----------------------------------------------------------- */
+
+1.Are there any race conditions in this prefix sum computation? 
+Why?
+I do not think there are any race conditions in my prefix sum
+computation. The threads dont have the ability to cause a race 
+condition between each other (because they work on different 
+elements of the array)and the main program waits until all
+its created threads finish before using the array again in the 
+next run.
+
+2.Prove rigorously that this algorithm does compute the prefix 
+sum correctly. 
+
+
+3.Can the result of x[i]+x[i-2h-1] of run h be saved back to x[i]?
+Explain your findings as clearly as possible.
+It will be able to as long as h doesnt push outside of my array's
+bounds. I cannot say that it will do it correctly though, when 
+because accessing the x[i] might cause a race codition.
+
+4.The main() creates n threads in each iteration and wait for them to complete.
+There is a significant amount of time in creating and joining threads.
+If you are allowed to use extra variables/arrays and busy waiting,
+can you just create n threads and let them do all the work without the use of a
+temporary array B[*,*]? Suggest a solution and discuss its correctness.
+With n threads each thread could automatically move onto the next
+run on to k without waiting for every other thread to finish. 
+With the extra variables you could create flags for where which
+threads are how far. 
